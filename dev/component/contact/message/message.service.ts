@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
+import { ConversationModel } from "../conversation/conversatio.modal";
 import { MessageModel } from "./message.model";
 
 export const CreateMessage = async (
@@ -14,7 +15,10 @@ export const CreateMessage = async (
     content: body.content,
     conversation: body.conversation,
   });
-
+  await ConversationModel.findOneAndUpdate(
+    { _id: body.conversation },
+    { $set: { lastmessage: message.content } }
+  );
   let result = await message.populate("author", "_id name");
   const io: Server = req.app.get("socketio");
   const newmessage = {
@@ -35,6 +39,7 @@ export const GetMessages = async (
 ) => {
   let con = new mongoose.Types.ObjectId(req.params.convId);
   let page = req.query.page ? parseInt(req.query.page as string) : 1;
+  let offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
   const messages = await MessageModel.aggregate([
     {
       $match: {
@@ -52,7 +57,7 @@ export const GetMessages = async (
     },
     { $unwind: "$author" },
     { $sort: { createdAt: -1 } },
-    { $skip: (page - 1) * 10 },
+    { $skip: (page - 1) * 10 + offset },
     { $limit: 10 },
     { $sort: { createdAt: 1 } },
     {

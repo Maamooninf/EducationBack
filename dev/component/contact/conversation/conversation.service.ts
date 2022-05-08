@@ -46,6 +46,7 @@ export const GetConvs = async (
       $project: {
         _id: 1,
         title: 1,
+        lastmessage: 1,
         pricture: 1,
       },
     },
@@ -80,6 +81,7 @@ export const GetConvOfLang = async (
         _id: 1,
         title: 1,
         pricture: 1,
+        lastmessage: 1,
         isjoined: 1,
       },
     },
@@ -161,11 +163,9 @@ export const DeleteUserFromConv = async (
       },
     }
   );
-  if (convers) {
-    io.to(`chat${req.params.convId}`).emit("RemoveUser", {
-      userId: req.user._id,
-      convId: req.params.convId,
-    });
-  }
+  io.to(`chat${req.params.convId}`).emit("RemoveUser", {
+    convId: convers?._id,
+    userId: req.user._id,
+  });
   return res.status(200).send("User Deleted Successfully");
 };

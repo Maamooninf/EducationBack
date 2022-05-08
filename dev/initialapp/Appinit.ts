@@ -5,7 +5,10 @@ import winston from "winston";
 import { globaly } from "./App.interface";
 import { apiErrorHandler } from "../errorhand/ApiErrorHandling";
 import { Server, Socket } from "socket.io";
-import { Conver } from "../component/contact/conversation/conversatio.interface";
+import {
+  Conver,
+  ConverOfUser,
+} from "../component/contact/conversation/conversatio.interface";
 import { UserModel } from "../component/user/user.modal";
 
 export class App {
@@ -88,7 +91,7 @@ export class App {
 
       socket.on(
         "joinAll",
-        async (obj: { userId: string; groups: Conver[] }) => {
+        async (obj: { userId: string; groups: ConverOfUser[] }) => {
           let updateuser = await UserModel.findOneAndUpdate(
             { _id: obj.userId },
             { $set: { Isonline: true, socketId: socket.id } },
@@ -111,6 +114,7 @@ export class App {
 
       socket.on("joinhand", (conId: string) => {
         socket.join(`chat${conId}`);
+        console.log("welcome man");
       });
       socket.on("leavehand", (conId: string) => {
         socket.leave(`chat${conId}`);

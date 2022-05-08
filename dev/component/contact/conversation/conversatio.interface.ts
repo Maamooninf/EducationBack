@@ -5,6 +5,7 @@ export interface Conversation {
   picture?: string;
   members: Array<mongoose.Types.ObjectId>;
   language: mongoose.Types.ObjectId;
+  lastmessage?: string;
 }
 
 export interface Conver {
@@ -15,4 +16,10 @@ export interface Conver {
   language: string;
   lastmessage?: string;
   isjoined?: number;
+}
+export interface ConverOfUser {
+  _id: string;
+  lastmessage: string;
+  title: string;
+  isjoined: number;
 }
