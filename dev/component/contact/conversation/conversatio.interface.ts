@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
-
+export interface LastMessage {
+  content: string;
+  createdAt: Date;
+}
 export interface Conversation {
   title: string;
   picture?: string;
   members: Array<mongoose.Types.ObjectId>;
   language: mongoose.Types.ObjectId;
-  lastmessage?: string;
+  lastmessage?: LastMessage;
 }
 
 export interface Conver {

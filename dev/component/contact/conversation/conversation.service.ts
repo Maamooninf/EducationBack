@@ -43,6 +43,21 @@ export const GetConvs = async (
       },
     },
     {
+      $lookup: {
+        from: "messages",
+        let: { localId: "$_id" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$conversation", "$$localId"] } } },
+          { $project: { content: 1, createdAt: 1 } },
+          { $sort: { createdAt: -1 } },
+          { $limit: 1 },
+          { $unset: ["_id"] },
+        ],
+        as: "lastmessage",
+      },
+    },
+    { $unwind: { path: "$lastmessage", preserveNullAndEmptyArrays: true } },
+    {
       $project: {
         _id: 1,
         title: 1,
@@ -50,6 +65,7 @@ export const GetConvs = async (
         pricture: 1,
       },
     },
+    { $sort: { "lastmessage.createdAt": -1 } },
   ]);
 
   return res.status(200).send(conversations);
@@ -76,6 +92,21 @@ export const GetConvOfLang = async (
         },
       },
     },
+    {
+      $lookup: {
+        from: "messages",
+        let: { localId: "$_id" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$conversation", "$$localId"] } } },
+          { $project: { content: 1, createdAt: 1 } },
+          { $sort: { createdAt: -1 } },
+          { $limit: 1 },
+          { $unset: ["_id"] },
+        ],
+        as: "lastmessage",
+      },
+    },
+    { $unwind: { path: "$lastmessage", preserveNullAndEmptyArrays: true } },
     {
       $project: {
         _id: 1,

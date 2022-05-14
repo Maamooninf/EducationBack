@@ -15,13 +15,13 @@ export const CreateLecture = async (
   };
   return res.status(200).send(result);
 };
-export const GetLectures = (
+export const GetLectures = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   let langId = new mongoose.Types.ObjectId(req.params.langId);
-  LectureModel.aggregate([
+  const lecs = await LectureModel.aggregate([
     {
       $match: {
         language: langId,
@@ -31,9 +31,8 @@ export const GetLectures = (
     {
       $project: { _id: 1, title: 1 },
     },
-  ]).then((lecs) => {
-    return res.status(200).send(lecs);
-  });
+  ]);
+  return res.status(200).send(lecs);
 };
 export const GetSlides = async (
   req: Request,

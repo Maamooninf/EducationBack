@@ -30,7 +30,7 @@ export function dtoValidationMiddleware(
             }
           });
 
-          next(ApiError.badRequest(errors));
+          next(ApiError.badRequest(dtoErrors));
         } else {
           next();
         }

@@ -6,7 +6,6 @@ const ConversationtSchema = new mongoose.Schema<Conversation>(
     picture: { type: String },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     language: { type: mongoose.Schema.Types.ObjectId, ref: "Language" },
-    lastmessage: { type: String },
   },
   { timestamps: true }
 );
